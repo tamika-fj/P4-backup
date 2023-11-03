@@ -1,0 +1,33 @@
+h1 {
+    color:black;
+    position: relative; 
+    top: 100px;
+    font-size: 22px;
+    text-align: center;
+}
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70vh; 
+}
+
+body {
+    background-image: url('/static/background_image.jpg');
+    background-size: cover;  
+    background-repeat: no-repeat;  
+}
+
+#BigButton {
+    padding: 40px 20px;
+    margin: 10px 10px 10px 10px;
+    font-size: 18px;
+}
+
+#PleaseSelect {
+    position: relative; 
+    top: 230px;
+    font-size: 22px;
+    text-align: center;
+    
+}

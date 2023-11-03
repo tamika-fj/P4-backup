@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+  Welcome!! 
+  Please enter your health metrics below:
+  <form action="{{ url_for('Metrics') }}" method="post">
+    <p>Blood Pressure:</p>
+    <p><input type="text" name="Blood Pressure" /></p>
+    <p>Plasma Glucose:</p>
+    <p><input type="text" name="Glucose" /></p>
+    <p>Body Mass Index:</p>
+    <p><input type="text" name="BMI" /></p>
+    <p><input type="submit" value="Submit" /></p>
+  </form>
+
+  {% if bp_category is defined %}
+    <p>Classification of Blood Pressure: {{ bp_category }}</p>
+    <p>Classification of Plasma Glucose: {{ glucose_category }}</p>
+    <p>Classification of Body Mass Index: {{ bmi_category }}</p>
+  {% endif %}
+
+
+{% endblock %}

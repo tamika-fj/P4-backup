@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+  Please enter your health metrics below to predict your diabetes status:
+  <form action="{{ url_for('Predictor') }}" method="post">
+    <p>Blood Pressure:</p>
+    <p><input type="text" name="Blood Pressure" /></p>
+    <p>Plasma Glucose:</p>
+    <p><input type="text" name="Glucose" /></p>
+    <p>Body Mass Index:</p>
+    <p><input type="text" name="BMI" /></p>
+    <p>Age:</p>
+    <p><input type="text" name="Age" /></p>
+    <p><input type="submit" value="Submit" /></p>
+  </form>
+  {% if response is defined %}
+    <p>Diabetes Prediction: {{ response }}</p>
+  {% endif %}
+{% endblock %}
+

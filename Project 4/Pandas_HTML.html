@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Diabetes Health Check</title>
+</head>
+<body>
+    <h1>Diabetes Health Check</h1>
+    <form action="/update" method="post">
+        <h2>Diastolic Blood Pressure</h2>
+        <input type="number" name="bp" placeholder="Enter Diastolic Blood Pressure" value="{{ bp }}">
+        <input type="submit" value="Update BP Chart">
+        <p>Category: {{ category_bp }}</p>
+    </form>
+    <form action="/update" method="post">
+        <h2>Plasma Glucose</h2>
+        <input type="number" name="glucose" placeholder="Enter Plasma Glucose" value="{{ glucose }}">
+        <input type="submit" value="Update Glucose Chart">
+        <p>Category: {{ category_glucose }}</p>
+    </form>
+    <form action="/update" method="post">
+        <h2>Body Mass Index</h2>
+        <input type="number" name="bmi" placeholder="Enter Body Mass Index" value="{{ bmi }}">
+        <input type="submit" value="Update BMI Chart">
+        <p>Category: {{ category_bmi }}</p>
+    </form>
+</body>
+</html>

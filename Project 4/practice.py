@@ -1,14 +1,32 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for,jsonify
 import requests
-from config import GEOAPIFY_API_KEY
+from config import geoapify_key
 import pandas as pd
 import joblib
+import json
+from sqlalchemy import create_engine, text
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 app = Flask(__name__, static_url_path='/static', static_folder='static')
 
+
 #Load the diabetes predictor model
 model = joblib.load("diabetes_model.joblib")
- 
+
+#load the JSON doctors data
+def load_json_data(filename):
+    with open(filename, "r") as file:
+        data = json.load(file)
+    return data
+
+def find_address(postcode, json_data):
+    postcodes = json_data.get("postcode", {})
+    
+    
+    if postcode in postcodes.values():
+        address= json_data.get("Address", {}).get(postcode)
+        return address
+    return None
 
 @app.route("/")
 def home():
@@ -68,7 +86,6 @@ def Metrics():
 
 
 
-    
 
 @app.route("/Predictor", methods=["POST", "GET"])
 def Predictor():
@@ -105,63 +122,23 @@ def Predictor():
         return render_template("Predictor.html")
         
 @app.route("/Nearest_Doc", methods=["POST", "GET"])
-def Nearest_Doc():
-    print("Entered Nearest_Doc function") 
+def Nearest_Doc(): 
     if request.method == "POST":
-        City = request.form["City"]
-        print(f"City received: {City}")
-
-        target_city = {City}
-        params = {
-            "text": target_city,
-            "apiKey": GEOAPIFY_API_KEY
-        }
-
-        # Use Geoapify to geocode the postcode and get its latitude and longitude
-        geocoding_url = f"https://api.geoapify.com/v1/geocode/search"
-        geocoding_response = requests.get(geocoding_url, params=params)
-
-        print(geocoding_response)
-
-        latitude = None
-        longitude = None
+        postcode = request.form.get("Postcode")
         
-        if geocoding_response.status_code == 200:
-            geocoding_data = geocoding_response.json()
-            # Extract latitude and longitude from the response
-            latitude = geocoding_data["features"][0]["properties"]["lat"]
-            longitude = geocoding_data["features"][0]["properties"]["lon"]
-        
-        #parameters for type of establishment 
-        categories = "healthcare.clinic_or_praxis.general"
-        radius = 10000
+        #load JSON doctor_data
+        json_data = load_json_data("Resources/doctors_data.json")
+        doctors_data = pd.DataFrame.from_dict(json_data)
 
-        # Set the parameters for the type of search
-        filters = f"circle:{latitude},{longitude},{radius}"
-        limit = 5
+        # Query the DataFrame to get the 'Address' for the given 'postcode'
+        address = doctors_data[doctors_data['postcode'] == postcode]['Address'].values[0]
 
-        # set up a parameters dictionary
-        params = {
-            "categories":categories,
-            "radius":radius,
-            "filters":filters,
-            "limit":limit,
-            "apiKey":GEOAPIFY_API_KEY    
-}
-
- # Make an API request to Geoapify
-        doctors_response = requests.get("https://api.geoapify.com/v1/places/by-categories", params=params)
-
-        if doctors_response.status_code == 200:
-                # Process the response and display the nearest doctors on your web page
-                data = doctors_response.json()
-                doctors = data.get("features", [])
-                 # You can pass the list of nearest doctors to your HTML template for rendering
-                return render_template("Nearest_doc.html", doctors=doctors)
+        if address:
+            return f"Doctor's address for postcode {postcode} is {address}."
         else:
-                return "Geocoding error: Unable to convert the postcode to coordinates."
+            return "no doctor found for the provided postcode"
     else:
-            return render_template("Nearest_doc.html")
+        return render_template("Nearest_Doc.html")
 
 
 

@@ -5,18 +5,9 @@
 <p>Please enter your postcode below to find your nearest doctor:</p>
 <form action="{{ url_for('Nearest_Doc') }}" method="post">
   <p>Postcode:</p>
-  <p><input type="text" name="City" /></p>
+  <p><input type="text" name="Postcode" /></p>
   <p><input type="submit" value="Submit" /></p>
 </form>
-
-{% if doctors %}
-<h2>Nearest Doctors:</h2>
-<ul>
-    {% for doctor in doctors %}
-    <li>{{ doctor.name }} - {{ doctor.address }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
 
 
 {% endblock %}
